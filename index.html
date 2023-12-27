@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Treinamento</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e7edea;
+            color: #030d4f;
+            min-height: 100vh;
+        }
+
+        #menu {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #fb0c06;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+            border-radius: 0 0 8px 8px;
+        }
+
+        #menu a {
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        #menu a:hover {
+            background-color: #030d4f;
+        }
+
+        #menu #inicio a {
+            background-color: #ffc52c;
+            border-radius: 4px;
+            color: #030d4f; 
+        }
+
+        #login-form {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        #login-form label {
+            margin-right: 5px;
+            color: #030d4f;
+        }
+
+        #login-btn, #logout-btn {
+            background-color: #ffc52c;
+            color: #030d4f;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        #search-form {
+            display: flex;
+            align-items: center;
+        }
+
+        #search-form label {
+            margin-right: 5px;
+            color: #030d4f;
+        }
+
+        #search, #search-btn {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        #content-container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        #header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #ceecef;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 20px;
+        }
+
+        #header h1 {
+            margin: 0;
+            color: #030d4f;
+        }
+
+        #post-form {
+            display: none;
+        }
+
+        .post {
+            border: 1px solid #D1D1D1;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .post h3 {
+            color: #fb0c06;
+            margin-top: 0;
+        }
+
+        .post p {
+            color: #555;
+        }
+
+        .post img, .post video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .post iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .post button {
+            background-color: #fb0c06;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+
+        .post button:hover {
+            background-color: #030d4f;
+        }
+
+        #media-preview img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        #posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .comments {
+            margin-top: 20px;
+        }
+
+        .comment {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .commenter {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .comment-text {
+            margin-bottom: 5px;
+        }
+
+        .datetime {
+            color: #777;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="menu">
+    <div id="inicio">
+        <a href="#" onclick="goToHome()">Início</a>
+    </div>
+    <div id="login-form">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" placeholder="Digite o usuário">
+        <label for="password">Senha:</label>
+        <input type="password" id="password" placeholder="Digite a senha">
+        <button id="login-btn" onclick="login()">Login</button>
+        <button id="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    <div id="search-form">
+        <label for="search">Pesquisar:</label>
+        <input type="text" id="search" placeholder="Digite o título">
+        <button onclick="searchPosts()">Pesquisar</button>
+    </div>
+</div>
+
+<div id="content-container">
+    <div id="header">
+        <h1>Portal de Treinamento</h1>
+    </div>
+
+    <div id="post-form">
+        <h2>Adicionar Conteúdo</h2>
+        <label for="title">Título:</label>
+        <input type="text" id="title" placeholder="Digite o título">
+
+        <label for="text">Texto:</label>
+        <textarea id="text" placeholder="Digite o texto"></textarea>
+
+        <label for="media">Mídia (URL da imagem, vídeo ou áudio, ou faça upload de um arquivo):</label>
+        <input type="file" id="media" accept="image/*,video/*,audio/*" onchange="previewMedia()">
+        <div id="media-preview"></div>
+
+        <label for="iframe">Incorporar Iframe:</label>
+        <textarea id="iframe" placeholder="Cole o código do iframe"></textarea>
+
+        <button id="add-post-btn" onclick="addPost()">Adicionar Conteúdo</button>
+    </div>
+
+    <div id="posts">
+        <!-- Conteúdo adicionado será exibido aqui -->
+    </div>
+</div>
+
+<script>
+    var validUsername = "admin";
+    var validPassword = "admin123";
+    var isLoggedIn = false;
+
+    function showElement(elementId) {
+        document.getElementById(elementId).style.display = "block";
+    }
+
+    function hideElement(elementId) {
+        document.getElementById(elementId).style.display = "none";
+    }
+
+    function login() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        if (username === validUsername && password === validPassword) {
+            isLoggedIn = true;
+            hideElement("login-btn");
+            hideElement("username");
+            hideElement("password");
+            showElement("logout-btn");
+            showElement("post-form");
+            showElement("posts");
+        } else {
+            alert("Usuário ou senha incorretos.");
+        }
+    }
+
+    function logout() {
+        isLoggedIn = false;
+        showElement("login-btn");
+        showElement("username");
+        showElement("password");
+        hideElement("logout-btn");
+        hideElement("post-form");
+        showElement("posts");
+    }
+
+    function addPost() {
+        if (!isLoggedIn) {
+            alert("Faça login para adicionar conteúdo.");
+            return;
+        }
+
+        var title = document.getElementById("title").value;
+        var text = document.getElementById("text").value;
+        var media = document.getElementById("media").files[0];
+        var iframe = document.getElementById("iframe").value;
+
+        var postContainer = document.getElementById("posts");
+
+        var postDiv = document.createElement("div");
+        postDiv.className = "post";
+
+        if (title) {
+            var titleElement = document.createElement("h3");
+            titleElement.textContent = title;
+            postDiv.appendChild(titleElement);
+        }
+
+        if (text) {
+            var textElement = document.createElement("p");
+            textElement.textContent = text;
+            postDiv.appendChild(textElement);
+        }
+
+        if (media) {
+            var mediaElement = document.createElement("img");
+            mediaElement.src = URL.createObjectURL(media);
+            postDiv.appendChild(mediaElement);
+        }
+
+        if (iframe) {
+            var iframeElement = document.createElement("iframe");
+            iframeElement.src = iframe;
+            postDiv.appendChild(iframeElement);
+        }
+
+        // Comentários
+        var commentsDiv = document.createElement("div");
+        commentsDiv.className = "comments";
+        var commentCounter = 0;
+
+        var commentButton = document.createElement("button");
+        commentButton.textContent = "Comentar";
+        commentButton.onclick = function () {
+            var commenterName = prompt("Digite seu nome:");
+            var commentText = prompt("Digite seu comentário:");
+
+            if (commenterName && commentText) {
+                var commentElement = document.createElement("div");
+                commentElement.className = "comment";
+
+                var commenterElement = document.createElement("p");
+                commenterElement.className = "commenter";
+                commenterElement.textContent = "Comentado por: " + commenterName;
+                commentElement.appendChild(commenterElement);
+
+                var commentTextElement = document.createElement("p");
+                commentTextElement.className = "comment-text";
+                commentTextElement.textContent = commentText;
+                commentElement.appendChild(commentTextElement);
+
+                // Adiciona a data e o horário do comentário
+                var date = new Date();
+                var datetimeElement = document.createElement("p");
+                datetimeElement.className = "datetime";
+                datetimeElement.textContent = "Em: " + date.toLocaleString();
+                commentElement.appendChild(datetimeElement);
+
+                commentsDiv.appendChild(commentElement);
+                commentCounter++;
+            }
+        };
+        commentsDiv.appendChild(commentButton);
+
+        // Adiciona contador de comentários
+        var commentCounterElement = document.createElement("span");
+        commentCounterElement.textContent = "Comentários: " + commentCounter;
+        commentsDiv.appendChild(commentCounterElement);
+
+        postDiv.appendChild(commentsDiv);
+
+        var deleteButton = document.createElement("button");
+        deleteButton.textContent = "Excluir";
+
+        if (isLoggedIn) {
+            deleteButton.onclick = function () {
+                postContainer.removeChild(postDiv);
+            };
+        } else {
+            deleteButton.disabled = true;
+        }
+
+        postDiv.appendChild(deleteButton);
+
+        postContainer.appendChild(postDiv);
+
+        // Limpar campos após adicionar post
+        document.getElementById("title").value = "";
+        document.getElementById("text").value = "";
+        document.getElementById("media").value = "";
+        document.getElementById("media-preview").innerHTML = "";
+        document.getElementById("iframe").value = "";
+    }
+
+    function previewMedia() {
+        var mediaPreview = document.getElementById("media-preview");
+        mediaPreview.innerHTML = "";
+
+        var mediaInput = document.getElementById("media");
+        if (mediaInput.files && mediaInput.files[0]) {
+            var mediaElement = document.createElement("img");
+            mediaElement.src = URL.createObjectURL(mediaInput.files[0]);
+            mediaPreview.appendChild(mediaElement);
+        }
+    }
+
+    function goToHome() {
+        alert("Redirecionando para a página inicial");
+    }
+
+    function searchPosts() {
+        var searchTerm = document.getElementById("search").value.toLowerCase();
+        var posts = document.getElementsByClassName("post");
+
+        for (var i = 0; i < posts.length; i++) {
+            var postTitle = posts[i].getElementsByTagName("h3")[0].textContent.toLowerCase();
+
+            if (postTitle.includes(searchTerm)) {
+                posts[i].style.display = "block";
+            } else {
+                posts[i].style.display = "none";
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
